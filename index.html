@@ -391,10 +391,17 @@ function resetBall(direction) {
 // ─── Game loop ───────────────────────────────────────────────
 function update() {
   // ── Player paddle (expression-driven) ──
+  const centerY = CANVAS_H / 2 - PADDLE_H / 2;
   if (expressionValue > 0.08) {
     playerY += PADDLE_SPEED * Math.min(expressionValue * 2, 1);
   } else if (expressionValue < -0.08) {
     playerY += PADDLE_SPEED * Math.max(expressionValue * 2, -1);
+  } else {
+    // Neutral: drift toward center
+    const diff = centerY - playerY;
+    if (Math.abs(diff) > 1) {
+      playerY += Math.sign(diff) * Math.min(PADDLE_SPEED * 0.5, Math.abs(diff));
+    }
   }
   playerY = Math.max(0, Math.min(CANVAS_H - PADDLE_H, playerY));
 
